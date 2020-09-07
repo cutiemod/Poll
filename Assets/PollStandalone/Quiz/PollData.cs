@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public class PollData
 {
     public string name;
@@ -33,6 +35,7 @@ public class PollData
     }
 }
 
+[Serializable]
 public class PollQuestion
 {
     public string text;
@@ -53,6 +56,7 @@ public class PollQuestion
     }
 }
 
+[Serializable]
 public class PollOption
 {
     public string text;

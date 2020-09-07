@@ -690,10 +690,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 877903132}
-  - component: {fileID: 877903134}
   - component: {fileID: 877903133}
+  - component: {fileID: 877903134}
   m_Layer: 0
-  m_Name: QuizController
+  m_Name: PollController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -725,19 +725,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 877903131}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 382de182c74f9cb408e0c7f6ca7b5253, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &877903134
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 877903131}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 406c7035d3d6ffd4b9ded83cd88f72f4, type: 3}
+  m_Script: {fileID: 11500000, guid: f86536f8dca4c384bade8b26b730c8c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   revealTime: 1
@@ -748,6 +736,24 @@ MonoBehaviour:
   endScreen: {fileID: 557054420}
   questionPrefab: {fileID: 5942206956567239794, guid: f017015f8097eb74b80cc7927bb9e08d,
     type: 3}
+--- !u!114 &877903134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 877903131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e55a72db9dd5524ba7a3915c07c0e2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseURL: http://order.promomat.ru/Poll/PollsSQL/
+  pollsURL: pollsGet.php
+  poll:
+    name: 
+    id: 0
+    questions: []
 --- !u!1 &1353305654
 GameObject:
   m_ObjectHideFlags: 0

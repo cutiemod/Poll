@@ -13,7 +13,6 @@ public class PollDB : MonoBehaviour
     string votesURL = "votesPost.php";
 
     public PollData poll;
-    private int questionCount;
 
     public void GetData()
     {
@@ -118,7 +117,7 @@ public class PollDB : MonoBehaviour
             }
         }
 
-        GetComponent<PollController>().SetPoll(poll);
+        //GetComponent<PollController>().SetPoll(poll);
         yield break;
     }
 

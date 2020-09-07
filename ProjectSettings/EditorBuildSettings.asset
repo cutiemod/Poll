@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/PollStandalone/Quiz/quiz.unity
+    path: Assets/PollStandalone/Quiz/poll.unity
     guid: 0d3556b112eff3d41a765f5388b22541
   m_configObjects: {}
