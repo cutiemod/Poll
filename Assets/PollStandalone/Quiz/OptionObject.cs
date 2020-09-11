@@ -9,11 +9,24 @@ public class OptionObject : MonoBehaviour
     public SpriteRenderer bg;
     public SpriteRenderer outline;
 
+    public Sprite[] outlineSprites;
+
+    public Sprite[] bgSprites;
+
+    public Color outlineBlue;
+    public Color outlineGreen;
+    public Color outlineRed;
+    public Color bgWhite;
+    public Color bgRed;
+
     //private PollOption option;
     private QuizOption option;
 
-    public void Set(QuizOption _option)
+    public void Set(QuizOption _option, byte type)
     {
+        outline.sprite = outlineSprites[type];
+        bg.sprite = bgSprites[type];
+
         option = _option;
         textObject.text = option.text;
     }
@@ -37,53 +50,56 @@ public class OptionObject : MonoBehaviour
     {
         if (Picked())
         {
-            SetBGColor(Color.white);
+            outline.enabled = false;
         }
         else
         {
-            SetBGColor(Color.green);
+            SetOutlineColor(outlineBlue);
         }
 
         option.Pick();
     }
 
-    public void Evaluate()
+    public ushort Evaluate()
     {
         bool correct = option.correct;
         bool picked = option.picked;
 
-        outline.enabled = true;
-
         if (correct)
         {
-            outline.color = Color.green;
-        }
-        else
+            SetOutlineColor(outlineGreen);
+        } 
+        else if (picked && !correct)
         {
-            outline.color = Color.red;
+            SetOutlineColor(outlineRed);
         }
 
         if (correct && picked)
         {
-            SetBGColor(Color.green);
-        }
-        else if (!correct && picked)
-        {
-            SetBGColor(Color.red);
+            //SetBGColor(bgWhite);
+            return 1;
         }
         else if (correct && !picked)
         {
-            SetBGColor(Color.yellow);
-        }
+            SetBGColor(bgRed);
+        } 
         else
         {
-            SetBGColor(Color.gray);
+            //SetBGColor(bgWhite);
         }
+        return 0;
     }
 
     private void SetBGColor(Color c)
     {
         c.a = bg.color.a;
         bg.color = c;
+    }
+
+    private void SetOutlineColor(Color c)
+    {
+        outline.enabled = true;
+        c.a = bg.color.a;
+        outline.color = c;
     }
 }

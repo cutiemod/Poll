@@ -87,6 +87,7 @@ public class QuizOption
     public uint id;
     public string text;
     public bool correct;
+    [NonSerialized]
     public bool picked;
 
     public QuizOption(string _text, uint _id, bool _correct)

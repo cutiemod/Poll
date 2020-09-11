@@ -75,6 +75,8 @@ public class DataManager : MonoBehaviour
 
         string json = JsonUtility.ToJson(newQuiz);
 
+        Debug.Log(json);
+
         return json;
     }
 }

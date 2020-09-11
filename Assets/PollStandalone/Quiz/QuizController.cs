@@ -5,10 +5,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class QuizController : MonoBehaviour
 {
+    public float resetTime;
+    private float timeSpentIdle;
+
     public float revealTime;
     public float questionDelayTime;
     public float questionChangeTime;
@@ -19,6 +23,7 @@ public class QuizController : MonoBehaviour
 
     public GameObject startScreen;
     public GameObject endScreen;
+    public Text endScreenText;
 
     public GameObject questionPrefab;
 
@@ -26,7 +31,7 @@ public class QuizController : MonoBehaviour
 
     private int currentQuestion;
 
-    private string currentAnswers;
+    private ushort correctAnswers;
 
     private WebGM GM;
     private DataManager quizManager;
@@ -38,6 +43,24 @@ public class QuizController : MonoBehaviour
         GetData();
     }
 
+    private IEnumerator Timeout()
+    {
+        timeSpentIdle = 0;
+        while (timeSpentIdle < resetTime)
+        {
+            timeSpentIdle += Time.deltaTime;
+            yield return null;
+        }
+
+        ResetQuiz();
+        yield break;
+    }
+
+    private void ResetQuiz()
+    {
+        SceneManager.LoadScene(0);
+    }
+
     private void GetData()
     {
         quizManager = GetComponent<DataManager>();
@@ -46,7 +69,7 @@ public class QuizController : MonoBehaviour
         CreateQuestions();
 
         currentQuestion = -1;
-        GoToNextQuestion();
+        //GoToNextQuestion();
     }
 
     public void SetQuiz(QuizData _quiz)
@@ -77,6 +100,15 @@ public class QuizController : MonoBehaviour
     {
         if (Input.anyKeyDown/* && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended*/)
         {
+            if (currentQuestion == -1)
+            {
+                StartCoroutine(Timeout());
+                GoToNextQuestion();
+                return;
+            }
+
+            timeSpentIdle = 0;
+
             Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(pos, Vector2.zero);
             if (hit && hit.collider != null)
@@ -92,6 +124,10 @@ public class QuizController : MonoBehaviour
                     {
                         NextIsClicked();
                     }
+                    else if(cb.value == "reset")
+                    {
+                        ResetQuiz();
+                    }
                 }
             }
         }
@@ -100,17 +136,16 @@ public class QuizController : MonoBehaviour
     private void NextIsClicked()
     {
         var qo = questions[currentQuestion].GetComponent<QuestionObject>();
-        bool answered = qo.AnswerButtonPressed(currentQuestion == questions.Count-1);
+        bool answered = qo.AnswerButtonPressed(currentQuestion == questions.Count - 1);
         if (answered)
         {
-            RevealCorrectAnswers(qo);
+            correctAnswers += RevealCorrectAnswers(qo);
         }
         else
         {
+            qo.EnableNext(false);
             GoToNextQuestion();
         }
-
-        
     }
 
     private void GoToNextQuestion()
@@ -123,14 +158,13 @@ public class QuizController : MonoBehaviour
         }
         else if (currentQuestion >= 0)
         {
-            currentAnswers += ",";
             StartCoroutine(PutNewQuestionIn());
         }
     }
 
-    private void RevealCorrectAnswers(QuestionObject qo)
+    private ushort RevealCorrectAnswers(QuestionObject qo)
     {
-        qo.RevealAnswers();
+        return qo.RevealAnswers();
     }
 
     private void EndPoll()
@@ -138,6 +172,8 @@ public class QuizController : MonoBehaviour
         GetComponent<DataManager>().SaveData(quiz);
         // Write the new answer string to the file
         //db.SaveData(dataFileName, currentAnswers);
+
+        endScreenText.text += $"{correctAnswers}/{questions.Count}";
 
         // Thank you everyone
         StartCoroutine(EndAnimation());
@@ -192,7 +228,9 @@ public class QuizController : MonoBehaviour
 
     private void OptionIsClicked(CustomButton option)
     {
-        foreach(QuizOption o in quiz.questions[currentQuestion].options)
+        QuestionObject qo = questions[currentQuestion].GetComponent<QuestionObject>();
+
+        foreach (QuizOption o in quiz.questions[currentQuestion].options)
         {
             var oo = option.GetComponent<OptionObject>();
             if (o.id == oo.GetID())
@@ -200,6 +238,8 @@ public class QuizController : MonoBehaviour
                 oo.Pick();
             }
         }
+
+        qo.CheckIfAnyOptionIsPicked();
 
         //StartCoroutine(RevealResutls(option));
     }
